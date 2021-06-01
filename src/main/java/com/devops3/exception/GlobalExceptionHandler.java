@@ -22,7 +22,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<EntityDTO> handleGenericException(RuntimeException ex) {
         EntityDTO dto = new EntityDTO();
         dto.setStatus(Status.FAILURE);
-        dto.setError(buildExceptionResponse(ex, "EMPTY FIELD"));
+        dto.setError(buildExceptionResponse(ex, ex.getLocalizedMessage()));
         dto.setResponseCode(HttpStatus.NOT_ACCEPTABLE.value());
 
         // 406
