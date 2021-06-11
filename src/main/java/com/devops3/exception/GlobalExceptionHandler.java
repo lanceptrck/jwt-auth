@@ -2,7 +2,7 @@ package com.devops3.exception;
 
 
 
-import com.devops3.dto.EntityDTO;
+import com.devops3.dto.ErrorDTO;
 import com.devops3.dto.Status;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,14 +20,25 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
 
     @ExceptionHandler(UnauthorizedUserException.class)
-    public ResponseEntity<EntityDTO> handleUnautorizedUserException(UnauthorizedUserException ex) {
-        EntityDTO dto = new EntityDTO();
+    public ResponseEntity<?> handleUnautorizedUserException(UnauthorizedUserException ex) {
+        ErrorDTO dto = new ErrorDTO();
         dto.setStatus(Status.FAILURE);
         dto.setError(buildExceptionResponse(ex, ex.getLocalizedMessage()));
         dto.setResponseCode(HttpStatus.UNAUTHORIZED.value());
 
         // 401
-        return new ResponseEntity<EntityDTO>(dto, HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>(dto, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(TokenRefreshException.class)
+    public ResponseEntity<?> handleTokenRefreshException(TokenRefreshException ex) {
+        ErrorDTO dto = new ErrorDTO();
+        dto.setStatus(Status.FAILURE);
+        dto.setError(buildExceptionResponse(ex, ex.getLocalizedMessage()));
+        dto.setResponseCode(HttpStatus.FORBIDDEN.value());
+
+        // 403
+        return new ResponseEntity<>(dto, HttpStatus.FORBIDDEN);
     }
 
     /*@ExceptionHandler(RuntimeException.class)

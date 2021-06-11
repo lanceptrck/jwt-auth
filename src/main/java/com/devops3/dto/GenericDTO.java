@@ -1,21 +1,13 @@
 package com.devops3.dto;
 
-
-
 import com.devops3.exception.ExceptionResponse;
-import com.fasterxml.jackson.annotation.JsonInclude;
 
-import java.util.ArrayList;
-import java.util.List;
-
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class EntityDTO<T> {
+public class GenericDTO {
 
     private Status status;
-    private ExceptionResponse error;
     private Integer responseCode;
 
-    public EntityDTO() {
+    public GenericDTO(){
 
     }
 
@@ -27,14 +19,6 @@ public class EntityDTO<T> {
         this.status = status;
     }
 
-    public ExceptionResponse getError() {
-        return error;
-    }
-
-    public void setError(ExceptionResponse error) {
-        this.error = error;
-    }
-
     public Integer getResponseCode() {
         return responseCode;
     }
@@ -42,5 +26,4 @@ public class EntityDTO<T> {
     public void setResponseCode(Integer responseCode) {
         this.responseCode = responseCode;
     }
-
 }
