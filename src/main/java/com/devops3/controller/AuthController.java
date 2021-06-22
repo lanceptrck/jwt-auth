@@ -1,5 +1,6 @@
 package com.devops3.controller;
 
+import com.devops3.dto.ErrorDTO;
 import com.devops3.exception.TokenRefreshException;
 import com.devops3.model.AuthenticationRequest;
 import com.devops3.model.RefreshToken;
@@ -11,7 +12,13 @@ import com.devops3.security.service.RefreshTokenService;
 import com.devops3.service.RoleRepository;
 import com.devops3.service.UserRepository;
 import com.devops3.utils.JwtUtil;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -53,8 +60,17 @@ class AuthController {
     RefreshTokenService refreshTokenService;
 
 
+    @Operation(summary = "Login user, return JWT if the user exists")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User successfully logged in",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = JwtResponse.class))}),
+            @ApiResponse(responseCode = "401", description = "User does not exist",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorDTO.class))})
+    })
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody(required = true) AuthenticationRequest authenticationRequest) throws Exception {
+    public ResponseEntity<?> createAuthenticationToken(@Valid @RequestBody(required = true) AuthenticationRequest authenticationRequest) throws Exception {
 
         Authentication authentication;
         try {
@@ -81,7 +97,16 @@ class AuthController {
                 userDetails.getUsername(), userDetails.getEmail(), roles));
     }
 
-    @PostMapping("/refresh")
+    @Operation(summary = "Refresh expired token")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully refreshed the token",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = TokenRefreshResponse.class))}),
+            @ApiResponse(responseCode = "403", description = "Cannot refresh token",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorDTO.class))})
+    })
+    @RequestMapping(value = "/refresh", method = RequestMethod.POST)
     public ResponseEntity<?> refreshtoken(@Valid @RequestBody TokenRefreshRequest request) {
         String requestRefreshToken = request.getRefreshToken();
 

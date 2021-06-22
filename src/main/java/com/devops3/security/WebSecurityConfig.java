@@ -52,7 +52,8 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/test/**").permitAll()
                 .antMatchers("/actuator/**").permitAll()
                 .antMatchers("/v3/**").permitAll()
-                .antMatchers("/swagger/**").permitAll().
+                .antMatchers("/swagger/**").permitAll()
+                .antMatchers("/swagger-ui/**").permitAll().
                 anyRequest().authenticated().and().
                 exceptionHandling().and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
